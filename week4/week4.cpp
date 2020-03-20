@@ -15,8 +15,12 @@ int main()
 	threshold(srcMat, binaryMat, 200, 255, THRESH_BINARY_INV);
 	imshow("binary", binaryMat);
 
+	/*腐蚀*/
+	Mat kernel = getStructuringElement(MORPH_ELLIPSE, Size(12, 12));
+	erode(binaryMat, dstMat, kernel);
+	imshow("erode", dstMat);
 
-	int nComp = connectedComponentsWithStats(binaryMat,
+	int nComp = connectedComponentsWithStats(dstMat,
 		labelMat,
 		statsMat,
 		centrMat,
@@ -30,11 +34,11 @@ int main()
 		bndbox.y = statsMat.at<int>(i, 1);
 		bndbox.width = statsMat.at<int>(i, 2);
 		bndbox.height = statsMat.at<int>(i, 3);
-		rectangle(binaryMat, bndbox, CV_RGB(255, 255, 255), 1, 8, 0);
+		rectangle(dstMat, bndbox, CV_RGB(255, 255, 255), 1, 8, 0);
 	}
 
-	imshow("output", binaryMat);
-	cout << "硬币个数：" << --nComp << endl;
+	imshow("output", dstMat);
+	cout << "个数：" << --nComp << endl;
 
 
 	waitKey(0);
