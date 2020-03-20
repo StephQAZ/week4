@@ -12,33 +12,32 @@ int main()
 	cv::Mat dstMat;
 
 	/*二值化*/
-	threshold(srcMat, dstMat, 0, 200, THRESH_OTSU);
-	imshow("binary", dstMat);
+	threshold(srcMat, binaryMat, 0, 255, THRESH_OTSU);
+	imshow("binary", binaryMat);
 
-	//Mat kernel = getStructuringElement(MORPH_CROSS, Size(12, 12));
-	//dilate(binaryMat, dstMat, kernel);
-	//imshow("dilate", dstMat);
-
-	int nComp = connectedComponentsWithStats(dstMat,
+	int nComp = connectedComponentsWithStats(binaryMat,
 		labelMat,
 		statsMat,
 		centrMat,
 		8,
 		CV_32S);
 
-
+	int count = 0;
 	for (int i = 1; i < nComp; i++) {
 		Rect bndbox;
 		bndbox.x = statsMat.at<int>(i, 0);
 		bndbox.y = statsMat.at<int>(i, 1);
 		bndbox.width = statsMat.at<int>(i, 2);
 		bndbox.height = statsMat.at<int>(i, 3);
-		rectangle(dstMat, bndbox, CV_RGB(255, 255, 255), 1, 8, 0);
+
+		if (statsMat.at<int>(i, 4) > 50) //像素面积大于50,计数+1
+			count++;
+		rectangle(binaryMat, bndbox, CV_RGB(255, 255, 255), 1, 8, 0);
 	}
 
-	imshow("output", dstMat);
-	nComp--;
-	cout << "个数：" << nComp << endl;
+	imshow("output", binaryMat);
+	count--; //减去背景
+	cout << "个数：" << count/2 << endl;
 
 
 	waitKey(0);
