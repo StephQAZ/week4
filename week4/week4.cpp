@@ -4,27 +4,36 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 using namespace cv;
-
+using namespace std;
 int main()
 {
 	cv::Mat srcMat = imread("C:\\Users\\27318\\Desktop\\大二下网络课程\\数字图像\\第四周\\coin.png", 0);
-	cv::Mat binaryMat, outMat,statsMat,centrMat;
+	cv::Mat binaryMat, labelMat,statsMat,centrMat;
 
 	/*二值化*/
 	threshold(srcMat, binaryMat, 0, 255, THRESH_OTSU);
 	imshow("OTSU", binaryMat);
 
-	int nComp = connectedComponentsWithStats(binaryMat, outMat, statsMat, centrMat, 8, CV_32S);
+	int nComp = connectedComponentsWithStats(binaryMat, 
+		labelMat, 
+		statsMat, 
+		centrMat, 
+		8, 
+		CV_32S);
 
-	for (int i = 0; i < nComp; i++) {
+
+	for (int i = 1; i < nComp; i++) {
 		Rect bndbox;
 		bndbox.x = statsMat.at<int>(i, 0);
 		bndbox.y = statsMat.at<int>(i, 1);
 		bndbox.width = statsMat.at<int>(i, 2);
 		bndbox.height = statsMat.at<int>(i, 3);
-		rectangle(outMat, bndbox, CV_RGB(255, 255, 255));
+		rectangle(binaryMat, bndbox, CV_RGB(255, 255, 255),1,8,0);
 	}
-	imshow("output", outMat);
+
+	imshow("output", binaryMat);
+	cout << "硬币个数：" << --nComp << endl;
+
 
 	waitKey(0);
 	return 0;
