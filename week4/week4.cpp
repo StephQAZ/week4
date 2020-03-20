@@ -12,7 +12,7 @@ int main()
 	cv::Mat dstMat;
 
 	/*二值化*/
-	threshold(srcMat, binaryMat, 0, 255, THRESH_OTSU);
+	threshold(srcMat, binaryMat, 110, 255, THRESH_BINARY_INV);
 	imshow("binary", binaryMat);
 
 	int nComp = connectedComponentsWithStats(binaryMat,
@@ -30,14 +30,13 @@ int main()
 		bndbox.width = statsMat.at<int>(i, 2);
 		bndbox.height = statsMat.at<int>(i, 3);
 
-		if (statsMat.at<int>(i, 4) > 50) //像素面积大于50,计数+1
+		if (bndbox.height<400 && bndbox.width<200)
 			count++;
-		rectangle(binaryMat, bndbox, CV_RGB(255, 255, 255), 1, 8, 0);
+		rectangle(binaryMat, bndbox, CV_RGB(0, 255, 255), 1, 8, 0);
 	}
 
 	imshow("output", binaryMat);
-	count--; //减去背景
-	cout << "个数：" << count/2 << endl;
+	cout << "个数：" << count << endl;
 
 
 	waitKey(0);
