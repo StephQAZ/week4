@@ -7,7 +7,32 @@ using namespace cv;
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	cv::Mat srcMat = imread("C:\\Users\\27318\\Desktop\\大二下网络课程\\数字图像\\第四周\\coin.png",0);
+	cv::Mat dstMat,outMat;
+
+	/*二值化*/
+	threshold(srcMat, dstMat, 0, 255, THRESH_OTSU);
+	imshow("OTSU", dstMat);
+
+	/*腐蚀*/
+	Mat kernel = getStructuringElement(MORPH_CROSS, Size(3, 3));
+	erode(dstMat, outMat, kernel);
+	imshow("erode", outMat);
+
+	/*膨胀*/
+	dilate(dstMat, outMat, kernel);
+	imshow("dilate", outMat);
+
+	/*开运算*/
+	morphologyEx(dstMat, outMat, MORPH_OPEN, kernel);
+	imshow("open", outMat);
+
+	/*闭运算*/
+	morphologyEx(dstMat, outMat, MORPH_CLOSE, kernel);
+	imshow("close", outMat);
+
+	waitKey(0);
+	return 0;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
