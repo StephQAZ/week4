@@ -7,7 +7,27 @@ using namespace cv;
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	cv::Mat srcMat = imread("C:\\Users\\27318\\Desktop\\大二下网络课程\\数字图像\\第四周\\coin.png", 0);
+	cv::Mat binaryMat, outMat,statsMat,centrMat;
+
+	/*二值化*/
+	threshold(srcMat, binaryMat, 0, 255, THRESH_OTSU);
+	imshow("OTSU", binaryMat);
+
+	int nComp = connectedComponentsWithStats(binaryMat, outMat, statsMat, centrMat, 8, CV_32S);
+
+	for (int i = 0; i < nComp; i++) {
+		Rect bndbox;
+		bndbox.x = statsMat.at<int>(i, 0);
+		bndbox.y = statsMat.at<int>(i, 1);
+		bndbox.width = statsMat.at<int>(i, 2);
+		bndbox.height = statsMat.at<int>(i, 3);
+		rectangle(outMat, bndbox, CV_RGB(255, 255, 255));
+	}
+	imshow("output", outMat);
+
+	waitKey(0);
+	return 0;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
